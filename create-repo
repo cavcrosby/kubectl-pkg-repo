@@ -1,0 +1,93 @@
+#!/bin/bash
+#
+# Creates a custom kubectl apt repository.
+
+set -eo pipefail
+
+# constants
+PROGNAME="$(basename "$0")"
+readonly PROGNAME
+
+if ! [ "$(command -v aptly)" ]; then
+    printf '%s: %s\n' "${PROGNAME}" "aptly cannot be found in the PATH!" >&2
+    exit 1
+fi
+
+sudo install \
+    --mode 644 \
+    "./sources.list.d/kubectl-1.24.sources" \
+    "/etc/apt/sources.list.d"
+
+sudo install \
+    --mode 644 \
+    "./sources.list.d/kubectl-1.25.sources" \
+    "/etc/apt/sources.list.d"
+
+sudo install \
+    --mode 644 \
+    "./sources.list.d/kubectl-1.26.sources" \
+    "/etc/apt/sources.list.d"
+
+sudo install \
+    --mode 644 \
+    "./sources.list.d/kubectl-1.27.sources" \
+    "/etc/apt/sources.list.d"
+
+sudo install \
+    --mode 644 \
+    "./sources.list.d/kubectl-1.28.sources" \
+    "/etc/apt/sources.list.d"
+
+sudo install \
+    --mode 644 \
+    "./sources.list.d/kubectl-1.29.sources" \
+    "/etc/apt/sources.list.d"
+
+sudo install \
+    --mode 644 \
+    "./sources.list.d/kubectl-1.30.sources" \
+    "/etc/apt/sources.list.d"
+
+sudo install \
+    --mode 644 \
+    "./sources.list.d/kubectl-1.31.sources" \
+    "/etc/apt/sources.list.d"
+
+sudo install \
+    --mode 644 \
+    "./sources.list.d/kubectl-1.32.sources" \
+    "/etc/apt/sources.list.d"
+
+sudo apt-get update
+sudo apt-get download \
+    "kubectl=1.24*" \
+    "kubectl=1.25*" \
+    "kubectl=1.26*" \
+    "kubectl=1.27*" \
+    "kubectl=1.28*" \
+    "kubectl=1.29*" \
+    "kubectl=1.30*" \
+    "kubectl=1.31*" \
+    "kubectl=1.32*"
+
+if ! aptly repo show -config "./.aptly.conf" "kubectl" > /dev/null 2>&1; then
+    aptly repo create -config "./.aptly.conf" -distribution="all" "kubectl"
+fi
+
+filesystem_endpoint="filesystem:kubectl-pkg-repo:deb"
+if aptly publish show \
+        -config "./.aptly.conf" \
+        "all" \
+        "${filesystem_endpoint}" > /dev/null 2>&1;
+    then
+        aptly publish drop -config "./.aptly.conf" "all" "${filesystem_endpoint}"
+fi
+
+aptly repo add -config "./.aptly.conf" "kubectl" ./*.deb
+aptly publish repo \
+    -config "./.aptly.conf" \
+    -gpg-key "FCE3FC38B5A46C2F" \
+    "kubectl" \
+    "${filesystem_endpoint}"
+
+exit 0

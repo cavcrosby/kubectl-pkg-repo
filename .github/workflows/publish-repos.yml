@@ -1,0 +1,38 @@
+---
+name: Publish the kubectl repositories
+
+on:
+  schedule:
+    - cron: "0 5 30 * *"
+  push:
+    branches:
+      - main
+
+jobs:
+  apt:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+
+      - name: Install the project dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install "aptly"
+
+      - name: Create the kubectl apt repository
+        run: ./create-repo
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          file_pattern: deb/
+          branch: gh-pages
+          create_branch: true
+          push_options: --force
