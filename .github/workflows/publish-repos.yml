@@ -30,7 +30,7 @@ jobs:
       - name: Create the kubectl apt repository
         run: ./create-repo
 
-      - uses: stefanzweifel/git-auto-commit-action@v5
+      - uses: stefanzweifel/git-auto-commit-action@v6
         with:
           file_pattern: deb/
           branch: gh-pages
