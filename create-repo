@@ -74,7 +74,7 @@ if ! aptly repo show -config "./.aptly.conf" "kubectl" > /dev/null 2>&1; then
     aptly repo create -config "./.aptly.conf" -distribution="all" "kubectl"
 fi
 
-filesystem_endpoint="filesystem:kubectl-pkg-repo:deb"
+filesystem_endpoint="filesystem:kubectl:deb"
 if aptly publish show \
         -config "./.aptly.conf" \
         "all" \
@@ -86,7 +86,7 @@ fi
 aptly repo add -config "./.aptly.conf" "kubectl" ./*.deb
 aptly publish repo \
     -config "./.aptly.conf" \
-    -gpg-key "FCE3FC38B5A46C2F" \
+    -gpg-key "1712499B701E2573C980214CFCE3FC38B5A46C2F" \
     "kubectl" \
     "${filesystem_endpoint}"
 

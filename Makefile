@@ -8,6 +8,7 @@ SHELL = /usr/bin/sh
 # targets
 HELP = help
 SETUP = setup
+CLEAN = clean
 
 # executables
 PYTHON = python
@@ -28,6 +29,7 @@ ${HELP}:
 >	@printf '%s\n' 'Common make targets:'
 >	@printf '%s\n' '  ${SETUP}                - installs the distro-independent dependencies for this'
 >	@printf '%s\n' '                         project'
+>	@printf '%s\n' '  ${CLEAN}                - removes files generated from targets'
 
 .PHONY: ${SETUP}
 ${SETUP}:
@@ -35,3 +37,13 @@ ${SETUP}:
 >	${PYTHON} -m ${PIP} install --upgrade "${PIP}"
 >	${PYTHON} -m ${PIP} install --requirement "./requirements-dev.txt"
 >	${PRE_COMMIT} install
+
+.PHONY: ${CLEAN}
+${CLEAN}:
+>	sudo rm \
+		--recursive \
+		--force \
+		"./deb/dists" \
+		"./deb/pool" \
+		kubectl_* \
+		/etc/apt/sources.list.d/kubectl-*
