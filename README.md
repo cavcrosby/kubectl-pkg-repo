@@ -1,9 +1,11 @@
-# kubectl-pkg-repo
+# kubectl
 
-A singular `apt` repository that holds the latest patch version of each
-specified minor `kubectl` version.
+Packaging for the `kubectl` Kubernetes client
+(<https://github.com/kubernetes/kubernetes/tree/master/cmd/kubectl>).
 
-## Usage
+## Installation
+
+### Debian-like distributions
 
 1. Update the `apt` package index and install packages needed to use the
    `kubectl` `apt` repository. The following steps assume that your `apt`
@@ -19,7 +21,7 @@ specified minor `kubectl` version.
    ```shell
    cat << _EOF_ | sudo tee "/etc/apt/sources.list.d/kubectl.sources"
    Types: deb
-   URIs: https://cavcrosby.github.io/kubectl-pkg-repo/deb
+   URIs: https://cavcrosby.github.io/kubectl/deb
    Suites: all
    Components: main
    Architectures-Remove: i386
